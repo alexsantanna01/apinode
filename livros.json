@@ -1,0 +1,14 @@
+[
+  {
+    "titulo": "O Hobbit",
+    "editora": "HarperCollins",
+    "preco": 40,
+    "paginas": 500
+  },
+  {
+    "titulo": "1984",
+    "editora": "Penguin Classics",
+    "preco": 30,
+    "paginas": 400
+  }
+  ]
