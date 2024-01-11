@@ -2,14 +2,14 @@ import express from "express";
 import LivroController from "../controllers/livroController.js";
 
 //Cria um objeto routes que irá armazenar as rotas relacionadas aos livros instanciadas nos controllers;
-const routes = express.Router();
+const router = express.Router();
 
-routes.get("/livros", LivroController.listarLivros);
-routes.get("/livros/busca", LivroController.listarLivroPorEditora);
-routes.get("/livros/:id", LivroController.listarLivroPorId);
-routes.post("/livros", LivroController.cadastrarLivro);
-routes.put("/livros/:id", LivroController.atualizarLivro);
-routes.delete("/livros/:id", LivroController.excluirLivro);
+router.get("/livros", LivroController.listarLivros);
+router.get("/livros/busca", LivroController.listarLivroPorEditora);
+router.get("/livros/:id", LivroController.listarLivroPorId);
+router.post("/livros", LivroController.cadastrarLivro);
+router.put("/livros/:id", LivroController.atualizarLivro);
+router.delete("/livros/:id", LivroController.excluirLivro);
 
-export default routes;
+export default router;
 
