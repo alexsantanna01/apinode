@@ -1,5 +1,11 @@
-import livros from "../models/Livro.js";
+import NaoEncontrado from "../erros/NaoEncontrado.js";
+import {livros} from "../models/index.js";
 
+
+// os métodos de controladores também são middlewares do Express! 
+// Eles são o tipo mais convencional de middleware, que recebem até três parâmetros. 
+// Como dito na aula, um middleware do Express é uma função que é executada em toda 
+// requisição para a API ou em determinadas requisições.
 class LivroController {
 
   static listarLivros = async (req, res, next) => {
@@ -17,12 +23,14 @@ class LivroController {
   static listarLivroPorId = async (req, res, next) => {
     try {
       const id = req.params.id;
-
       const livroResultados = await livros.findById(id)
         .populate("autor", "nome")
         .exec();
-
-      res.status(200).send(livroResultados);
+      if (livroResultados !== null) {
+        res.status(200).send(livroResultados);
+      } else {
+        next(new NaoEncontrado("ID do livro não localizado."));
+      }
     } catch (erro) {
       next(erro);
     }
@@ -31,9 +39,7 @@ class LivroController {
   static cadastrarLivro = async (req, res, next) => {
     try {
       let livro = new livros(req.body);
-
       const livroResultado = await livro.save();
-
       res.status(201).send(livroResultado.toJSON());
     } catch (erro) {
       next(erro);
@@ -43,10 +49,13 @@ class LivroController {
   static atualizarLivro = async (req, res, next) => {
     try {
       const id = req.params.id;
-    
-      await livros.findByIdAndUpdate(id, {$set: req.body});
-    
-      res.status(200).send({message: "Livro atualizado com sucesso"});
+      const livroResultados = await livros.findByIdAndUpdate(id, {$set: req.body});
+
+      if (livroResultados !== null) {
+        res.status(200).send({message: "Livro atualizado com sucesso"});
+      } else {
+        next(new NaoEncontrado("ID do livro não localizado."));
+      }
     } catch (erro) {
       next(erro);
     }
@@ -55,10 +64,13 @@ class LivroController {
   static excluirLivro = async (req, res, next) => {
     try {
       const id = req.params.id;
+      const livrosResultado = await livros.findByIdAndDelete(id);
 
-      await livros.findByIdAndDelete(id);
-
-      res.status(200).send({message: "Livro removido com sucesso"});
+      if (livrosResultado !== null) {
+        res.status(200).send({message: "Livro removido com sucesso"});
+      } else {
+        next(new NaoEncontrado("ID do livro não localizado."));
+      }    
     } catch (erro) {
       next(erro);
     }
@@ -66,11 +78,13 @@ class LivroController {
 
   static listarLivroPorEditora = async (req, res, next) => {
     try {
-      const editora = req.query.editora;
-      
+      const editora = req.query.editora;  
       const livrosResultado = await livros.find({"editora": editora});
-
-      res.status(200).send(livrosResultado);
+      if (livrosResultado !== null) {
+        res.status(200).send(livrosResultado);
+      } else {
+        next(new NaoEncontrado("ID do livro não localizado."));
+      }
     } catch (erro) {
       next(erro);
     }
